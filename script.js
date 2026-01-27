@@ -9,6 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
     messagingSenderId: "571196450384",
     appId: "1:571196450384:web:5b316891a8a4e65bd79355"
   };
+  // ================= DOM ELEMENTS =================
+const loginSection = document.getElementById("loginSection");
+const donorSection = document.getElementById("donorSection");
+const ngoSection = document.getElementById("ngoSection");
+const roleSwitch = document.getElementById("roleSwitch");
+
 
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -180,3 +186,4 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
 });
+
