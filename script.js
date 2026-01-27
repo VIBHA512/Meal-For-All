@@ -13,6 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
+  const auth = firebase.auth();
+
 
   const db = firebase.firestore();
 
@@ -148,5 +150,59 @@ document.addEventListener("DOMContentLoaded", () => {
       distance: distance
     });
   };
+
+  //login system 
+  window.loginUser = () => {
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
+  const role = document.querySelector('input[name="role"]:checked')?.value;
+
+  if (!email || !password || !role) {
+    alert("Please fill all details");
+    return;
+  }
+
+  auth.signInWithEmailAndPassword(email, password)
+    .then(() => {
+      localStorage.setItem("userRole", role);
+      applyRoleUI();
+    })
+    .catch(err => alert(err.message));
+};
+// role based ui control
+  function applyRoleUI() {
+  const role = localStorage.getItem("userRole");
+
+  document.getElementById("loginSection").style.display = "none";
+
+  if (role === "donor") {
+    donorSection.style.display = "block";
+    ngoSection.style.display = "none";
+  }
+
+  if (role === "ngo") {
+    donorSection.style.display = "none";
+    ngoSection.style.display = "block";
+  }
+}
+//auto login on refresh 
+  auth.onAuthStateChanged(user => {
+  if (user && localStorage.getItem("userRole")) {
+    applyRoleUI();
+  } else {
+    loginSection.style.display = "block";
+    donorSection.style.display = "none";
+    ngoSection.style.display = "none";
+  }
+});
+//logout
+  window.logout = () => {
+  auth.signOut().then(() => {
+    localStorage.clear();
+    location.reload();
+  });
+};
+
+
 
 });
