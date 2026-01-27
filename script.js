@@ -23,6 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginSection = document.getElementById("loginSection");
   const donorSection = document.getElementById("donorSection");
   const ngoSection = document.getElementById("ngoSection");
+  const mainApp = document.getElementById("mainApp");
+
   
 
   // ================= IMAGE PREVIEW =================
@@ -149,29 +151,31 @@ const role = roleInput ? roleInput.value : null;
   };
 
   // ================= ROLE BASED UI =================
-  function applyRoleUI() {
-    const role = localStorage.getItem("userRole");
+function applyRoleUI() {
+  const role = localStorage.getItem("userRole");
 
-    loginSection.style.display = "none";
-  
+  loginSection.style.display = "none";
+  mainApp.style.display = "block"; // 🔥 THIS WAS MISSING
 
-    if (role === "donor") {
-      donorSection.style.display = "block";
-      ngoSection.style.display = "none";
-    } else {
-      donorSection.style.display = "none";
-      ngoSection.style.display = "block";
-    }
+  if (role === "donor") {
+    donorSection.style.display = "block";
+    ngoSection.style.display = "none";
+  } else {
+    donorSection.style.display = "none";
+    ngoSection.style.display = "block";
   }
+}
 
   // ================= AUTO LOGIN =================
   auth.onAuthStateChanged(user => {
     if (user && localStorage.getItem("userRole")) {
       applyRoleUI();
     } else {
-      loginSection.style.display = "block";
-      donorSection.style.display = "none";
-      ngoSection.style.display = "none";
+    loginSection.style.display = "block";
+mainApp.style.display = "none";
+donorSection.style.display = "none";
+ngoSection.style.display = "none";
+
     }
   });
 
@@ -184,6 +188,7 @@ const role = roleInput ? roleInput.value : null;
   };
 
 });
+
 
 
 
