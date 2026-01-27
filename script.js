@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginSection = document.getElementById("loginSection");
   const donorSection = document.getElementById("donorSection");
   const ngoSection = document.getElementById("ngoSection");
-  const roleSwitch = document.getElementById("roleSwitch");
+  
 
   // ================= IMAGE PREVIEW =================
   let imageData = "";
@@ -153,7 +153,7 @@ const role = roleInput ? roleInput.value : null;
     const role = localStorage.getItem("userRole");
 
     loginSection.style.display = "none";
-    roleSwitch.style.display = "none";
+  
 
     if (role === "donor") {
       donorSection.style.display = "block";
@@ -184,6 +184,7 @@ const role = roleInput ? roleInput.value : null;
   };
 
 });
+
 
 
 
