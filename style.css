@@ -283,6 +283,23 @@ footer {
 .role-box:hover {
   border-color: #4caf50;
 }
+.logout-btn {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  padding: 10px 16px;
+  background: #ff5252;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 999;
+}
+
+.logout-btn:hover {
+  background: #e53935;
+}
 
 
 @media (min-width: 900px) {
@@ -302,6 +319,7 @@ footer {
 @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
 
 
 
