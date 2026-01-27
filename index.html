@@ -21,19 +21,28 @@
 
 <!-- ================= LOGIN SECTION ================= -->
 <div id="loginSection" class="card login-card">
-  <h2>Login</h2>
+<h2>Login to Meal For All</h2>
+<p class="login-subtitle">
+  Choose your role to continue
+</p>
 
   <input type="email" id="loginEmail" placeholder="Email" />
   <input type="password" id="loginPassword" placeholder="Password" />
 
-  <div class="role">
-    <label>
-      <input type="radio" name="role" value="donor" checked /> Donor
-    </label>
-    <label>
-      <input type="radio" name="role" value="ngo" /> NGO
-    </label>
-  </div>
+<div class="role">
+  <label class="role-box">
+    <input type="radio" name="role" value="donor" checked />
+    <strong>🍽️ Donor</strong>
+    <span>Hotels, Events, Households</span>
+  </label>
+
+  <label class="role-box">
+    <input type="radio" name="role" value="ngo" />
+    <strong>🏢 NGO</strong>
+    <span>Orphanages, Shelters</span>
+  </label>
+</div>
+
 
   <!-- 🔴 ADDED: login error message -->
   <p id="loginError" style="color:red; margin-top:8px;"></p>
@@ -130,3 +139,4 @@
 
 </body>
 </html>
+
