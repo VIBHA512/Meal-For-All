@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Meal For All</title>
@@ -8,6 +11,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
+  <div id="loginSection" class="card">
+  <h2>Login</h2>
+
+  <input type="email" id="loginEmail" placeholder="Email">
+  <input type="password" id="loginPassword" placeholder="Password">
+
+  <div class="role">
+    <label>
+      <input type="radio" name="role" value="donor"> Donor
+    </label>
+    <label>
+      <input type="radio" name="role" value="ngo"> NGO
+    </label>
+  </div>
+
+  <button onclick="loginUser()">Login</button>
+</div>
+
   <div class="container">
     <header class="header">
       <div class="logo-wrapper">
@@ -83,6 +104,15 @@
         </li>
       </ul>
     </div>
+    <div id="donorSection" style="display:none;">
+  <!-- YOUR EXISTING DONOR HTML (unchanged) -->
+</div>
+
+<div id="ngoSection" style="display:none;">
+  <!-- YOUR EXISTING NGO HTML (unchanged) -->
+</div>
+<button onclick="logout()" class="logout">Logout</button>
+
 
     <footer>💻 Prototype MVP <span class="sep">•</span> Built with ❤️ for Hackathon</footer>
   </div>
@@ -94,3 +124,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
