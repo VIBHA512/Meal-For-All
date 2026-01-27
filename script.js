@@ -9,8 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
     messagingSenderId: "571196450384",
     appId: "1:571196450384:web:5b316891a8a4e65bd79355"
   };
-  
-
 
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -19,20 +17,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  // ================= DOM REFERENCES (VERY IMPORTANT) =================
+  // ================= DOM REFERENCES =================
   const loginSection = document.getElementById("loginSection");
   const donorSection = document.getElementById("donorSection");
   const ngoSection = document.getElementById("ngoSection");
   const mainApp = document.getElementById("mainApp");
+  const loginError = document.getElementById("loginError"); // 🔧 ADDED
 
-  
+  // 🔧 SAFETY CHECK (PREVENTS BLANK SCREEN)
+  if (!loginSection || !mainApp) {
+    console.error("Critical DOM elements missing");
+    return;
+  }
 
   // ================= IMAGE PREVIEW =================
   let imageData = "";
   const foodImage = document.getElementById("foodImage");
   const preview = document.getElementById("preview");
 
-  if (foodImage) {
+  if (foodImage && preview) {
     foodImage.addEventListener("change", function () {
       const file = this.files[0];
       if (!file) return;
@@ -79,8 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (i.type !== "file") i.value = "";
     });
 
-    preview.style.display = "none";
-    foodImage.value = "";
+    if (preview) preview.style.display = "none";
+    if (foodImage) foodImage.value = "";
     imageData = "";
   };
 
@@ -133,12 +136,11 @@ document.addEventListener("DOMContentLoaded", () => {
   window.loginUser = () => {
     const email = document.getElementById("loginEmail").value.trim();
     const password = document.getElementById("loginPassword").value.trim();
-  const roleInput = document.querySelector('input[name="role"]:checked');
-const role = roleInput ? roleInput.value : null;
-
+    const roleInput = document.querySelector('input[name="role"]:checked');
+    const role = roleInput ? roleInput.value : null;
 
     if (!email || !password || !role) {
-      alert("Please fill all details");
+      if (loginError) loginError.innerText = "Please fill all details";
       return;
     }
 
@@ -147,35 +149,36 @@ const role = roleInput ? roleInput.value : null;
         localStorage.setItem("userRole", role);
         applyRoleUI();
       })
-      .catch(err => alert(err.message));
+      .catch(err => {
+        if (loginError) loginError.innerText = err.message;
+      });
   };
 
   // ================= ROLE BASED UI =================
-function applyRoleUI() {
-  const role = localStorage.getItem("userRole");
+  function applyRoleUI() {
+    const role = localStorage.getItem("userRole");
 
-  loginSection.style.display = "none";
-  mainApp.style.display = "block"; // 🔥 THIS WAS MISSING
+    loginSection.style.display = "none";
+    mainApp.style.display = "block"; // 🔥 FIXED (THIS CAUSED BLANK SCREEN)
 
-  if (role === "donor") {
-    donorSection.style.display = "block";
-    ngoSection.style.display = "none";
-  } else {
-    donorSection.style.display = "none";
-    ngoSection.style.display = "block";
+    if (role === "donor") {
+      donorSection.style.display = "block";
+      ngoSection.style.display = "none";
+    } else {
+      donorSection.style.display = "none";
+      ngoSection.style.display = "block";
+    }
   }
-}
 
   // ================= AUTO LOGIN =================
   auth.onAuthStateChanged(user => {
     if (user && localStorage.getItem("userRole")) {
       applyRoleUI();
     } else {
-    loginSection.style.display = "block";
-mainApp.style.display = "none";
-donorSection.style.display = "none";
-ngoSection.style.display = "none";
-
+      loginSection.style.display = "block";
+      mainApp.style.display = "none";
+      donorSection.style.display = "none";
+      ngoSection.style.display = "none";
     }
   });
 
@@ -188,8 +191,3 @@ ngoSection.style.display = "none";
   };
 
 });
-
-
-
-
-
