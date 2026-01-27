@@ -254,6 +254,36 @@ footer {
   background: #ff5252;
   margin-top: 15px;
 }
+.login-subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.role {
+  display: flex;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.role-box {
+  flex: 1;
+  border: 2px solid #eee;
+  padding: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.role-box input {
+  margin-right: 6px;
+}
+
+.role-box:hover {
+  border-color: #4caf50;
+}
+
 
 @media (min-width: 900px) {
   .layout {
@@ -272,6 +302,7 @@ footer {
 @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
 
 
 
