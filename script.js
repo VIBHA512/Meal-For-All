@@ -131,7 +131,9 @@ document.addEventListener("DOMContentLoaded", () => {
   window.loginUser = () => {
     const email = document.getElementById("loginEmail").value.trim();
     const password = document.getElementById("loginPassword").value.trim();
-    const role = document.querySelector('input[name="role"]:checked')?.value;
+  const roleInput = document.querySelector('input[name="role"]:checked');
+const role = roleInput ? roleInput.value : null;
+
 
     if (!email || !password || !role) {
       alert("Please fill all details");
@@ -182,5 +184,6 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
 });
+
 
 
