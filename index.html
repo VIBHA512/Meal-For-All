@@ -35,8 +35,10 @@
     </label>
   </div>
 
-<button type="button" onclick="loginUser()">Login</button>
+  <!-- 🔴 ADDED: login error message -->
+  <p id="loginError" style="color:red; margin-top:8px;"></p>
 
+  <button type="button" onclick="loginUser()">Login</button>
 </div>
 
 <!-- ================= MAIN APP ================= -->
@@ -113,12 +115,7 @@
 
       <h3><span class="icon-box-sm">🍽️</span> Available Food</h3>
 
-      <ul id="foodList">
-        <li class="food-card">
-          <h4>Veg Thali - Rice, Dal, Sabzi</h4>
-          <button class="claim-btn">Claim Now</button>
-        </li>
-      </ul>
+      <ul id="foodList"></ul>
     </div>
 
     <button class="logout" onclick="logout()">Logout</button>
@@ -133,4 +130,3 @@
 
 </body>
 </html>
-
