@@ -1,49 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Meal For All</title>
-  <link rel="stylesheet" href="style.css" />
+
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
+
 <body>
-  <div id="loginSection" class="card">
+
+<!-- ================= LOGIN SECTION ================= -->
+<div id="loginSection" class="card login-card">
   <h2>Login</h2>
 
-  <input type="email" id="loginEmail" placeholder="Email">
-  <input type="password" id="loginPassword" placeholder="Password">
+  <input type="email" id="loginEmail" placeholder="Email" />
+  <input type="password" id="loginPassword" placeholder="Password" />
 
   <div class="role">
     <label>
-      <input type="radio" name="role" value="donor"> Donor
+      <input type="radio" name="role" value="donor" checked /> Donor
     </label>
     <label>
-      <input type="radio" name="role" value="ngo"> NGO
+      <input type="radio" name="role" value="ngo" /> NGO
     </label>
   </div>
 
   <button onclick="loginUser()">Login</button>
 </div>
 
+<!-- ================= MAIN APP ================= -->
+<div id="mainApp" style="display:none;">
+
   <div class="container">
+
+    <!-- HEADER -->
     <header class="header">
       <div class="logo-wrapper">
         <div class="logo-icon">❤️</div>
         <span class="leaf">🌿</span>
       </div>
       <h1>Meal For All</h1>
-      <p class="subtitle"><span class="dot green"></span> Reducing food waste <span class="sep">•</span> Feeding communities <span class="dot orange"></span></p>
+      <p class="subtitle">
+        <span class="dot green"></span> Reducing food waste
+        <span class="sep">•</span>
+        Feeding communities
+        <span class="dot orange"></span>
+      </p>
       <div class="divider"></div>
     </header>
-<div class="switch-buttons" id="roleSwitch" style="display:none;">
 
+    <!-- ================= DONOR SECTION ================= -->
+    <div id="donorSection" class="card" style="display:none;">
 
-    <div id="donorSection" class="card">
       <h2><span class="icon-box green">👤</span> Donor Details</h2>
+
       <div class="form-grid">
         <div class="input-wrapper"><span class="input-icon">👤</span><input id="donorName" placeholder="Donor Name" /></div>
         <div class="input-wrapper"><span class="input-icon">🏢</span><input id="donorType" placeholder="Donor Type (Hotel / Wedding / Event)" /></div>
@@ -52,15 +72,20 @@
       </div>
 
       <h3><span class="icon-box-sm">🍽️</span> Food Details</h3>
+
       <div class="form-grid">
         <div class="input-wrapper"><span class="input-icon">🥗</span><input id="foodDetails" placeholder="Food Description (e.g. Veg Thali)" /></div>
         <div class="input-wrapper"><span class="input-icon">👥</span><input id="foodQuantity" placeholder="Quantity (e.g. serves 100 people)" /></div>
         <div class="input-wrapper"><span class="input-icon">🍽️</span><input id="foodType" placeholder="Veg / Non-Veg" /></div>
         <div class="input-wrapper"><span class="input-icon">🕐</span><input id="pickupTime" placeholder="Pickup Time (next 4–5 hours preferred)" /></div>
       </div>
-      <div class="input-wrapper full-width"><span class="input-icon">📍</span><input id="location" placeholder="Pickup Location" /></div>
 
-      <div class="hint-box"><span>ℹ️</span> NGOs nearby will be notified instantly after posting</div>
+      <div class="input-wrapper full-width">
+        <span class="input-icon">📍</span>
+        <input id="location" placeholder="Pickup Location" />
+      </div>
+
+      <div class="hint-box">ℹ️ NGOs nearby will be notified instantly after posting</div>
 
       <label for="foodImage" class="upload-box">
         <div class="upload-icon">📸</div>
@@ -73,8 +98,11 @@
       <button class="submit-btn" onclick="postFood()">📤 Notify Nearby NGOs</button>
     </div>
 
+    <!-- ================= NGO SECTION ================= -->
     <div id="ngoSection" class="card" style="display:none;">
+
       <h2><span class="icon-box green">🏢</span> NGO Details</h2>
+
       <div class="form-grid">
         <div class="input-wrapper"><span class="input-icon">🏢</span><input id="ngoName" placeholder="NGO Name" /></div>
         <div class="input-wrapper"><span class="input-icon">📞</span><input id="ngoPhone" placeholder="Contact Number" /></div>
@@ -82,44 +110,25 @@
         <div class="input-wrapper"><span class="input-icon">❤️</span><input id="ngoType" placeholder="NGO Type (Orphanage / Shelter)" /></div>
       </div>
 
-      <div id="alertBox"><span class="alert-icon">🔔</span><div><strong>🚨 New food posted nearby!</strong><small>Click to dismiss</small></div></div>
-
       <h3><span class="icon-box-sm">🍽️</span> Available Food</h3>
-      <p class="hint">Claim food to reserve pickup and view location</p>
+
       <ul id="foodList">
         <li class="food-card">
-          <div class="food-header"><span class="food-tag">Veg</span><span class="donor-name">Grand Hotel</span></div>
-          <h4>Veg Thali - Rice, Dal, Sabzi, Roti</h4>
-          <div class="food-meta"><span>❤️ Serves 50 people</span><span>🕐 Pickup before 3 PM</span></div>
-          <button class="claim-btn">Claim Now</button>
-        </li>
-        <li class="food-card">
-          <div class="food-header"><span class="food-tag">Veg</span><span class="donor-name">Sharma Wedding</span></div>
-          <h4>Mixed Buffet - Paneer, Biryani, Sweets</h4>
-          <div class="food-meta"><span>❤️ Serves 200 people</span><span>🕐 Pickup before 5 PM</span></div>
+          <h4>Veg Thali - Rice, Dal, Sabzi</h4>
           <button class="claim-btn">Claim Now</button>
         </li>
       </ul>
     </div>
-    <div id="donorSection" style="display:none;">
-  <!-- YOUR EXISTING DONOR HTML (unchanged) -->
-</div>
 
-<div id="ngoSection" style="display:none;">
-  <!-- YOUR EXISTING NGO HTML (unchanged) -->
-</div>
-<button onclick="logout()" class="logout">Logout</button>
+    <button class="logout" onclick="logout()">Logout</button>
 
+    <footer>💻 Prototype MVP • Built with ❤️ for Hackathon</footer>
 
-    <footer>💻 Prototype MVP <span class="sep">•</span> Built with ❤️ for Hackathon</footer>
   </div>
-  
-  <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</div>
 
-    <script src="script.js"></script>
+<!-- JS -->
+<script src="script.js"></script>
+
 </body>
 </html>
-
-
