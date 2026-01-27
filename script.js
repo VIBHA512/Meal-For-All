@@ -13,10 +13,15 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
+
   const auth = firebase.auth();
-
-
   const db = firebase.firestore();
+
+  // ================= DOM REFERENCES (VERY IMPORTANT) =================
+  const loginSection = document.getElementById("loginSection");
+  const donorSection = document.getElementById("donorSection");
+  const ngoSection = document.getElementById("ngoSection");
+  const roleSwitch = document.getElementById("roleSwitch");
 
   // ================= IMAGE PREVIEW =================
   let imageData = "";
@@ -38,17 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ================= VIEW SWITCH =================
-  window.showDonor = () => {
-    document.getElementById("donorSection").style.display = "block";
-    document.getElementById("ngoSection").style.display = "none";
-  };
-
-  window.showNGO = () => {
-    document.getElementById("donorSection").style.display = "none";
-    document.getElementById("ngoSection").style.display = "block";
-  };
-
   // ================= POST FOOD =================
   window.postFood = () => {
     const donorName = document.getElementById("donorName").value.trim();
@@ -61,17 +55,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     db.collection("foods").add({
-      donorName: donorName,
+      donorName,
       donorType: document.getElementById("donorType").value,
       donorPhone: document.getElementById("donorPhone").value,
       donorEmail: document.getElementById("donorEmail").value,
-
       food: foodDetails,
       quantity: document.getElementById("foodQuantity").value,
       foodType: document.getElementById("foodType").value,
       pickupTime: document.getElementById("pickupTime").value,
-      location: location,
-
+      location,
       image: imageData || "",
       claimed: false,
       postedAt: Date.now()
@@ -79,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     alert("Food posted successfully 🎉");
 
-    // reset form
     document.querySelectorAll("#donorSection input").forEach(i => {
       if (i.type !== "file") i.value = "";
     });
@@ -89,45 +80,31 @@ document.addEventListener("DOMContentLoaded", () => {
     imageData = "";
   };
 
-  // ================= NGO VIEW =================
-  db.collection("foods")
-    .orderBy("postedAt", "desc")
+  // ================= NGO LIVE VIEW =================
+  db.collection("foods").orderBy("postedAt", "desc")
     .onSnapshot(snapshot => {
       const foodList = document.getElementById("foodList");
+      if (!foodList) return;
+
       foodList.innerHTML = "";
 
       snapshot.forEach(doc => {
         const d = doc.data();
-        const li = document.createElement("li");
-
         if (!d.food || !d.location) return;
 
-        const mapLink = `
-          <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(d.location)}"
-             target="_blank">🗺 Open in Maps</a>
-        `;
+        const li = document.createElement("li");
+        li.className = "food-card";
 
-        if (d.claimed) {
-          li.innerHTML = `
-            <b>${d.food}</b><br>
-            📍 ${d.location}<br>
-            ✔ Claimed by: ${d.claimedBy}<br>
-            🚚 Distance: ${d.distance} km<br>
-            ${mapLink}
-          `;
-        } else {
-          li.innerHTML = `
-            <b>${d.food}</b><br>
-            🍱 ${d.foodType || ""}<br>
-            👥 ${d.quantity || ""}<br>
-            ⏰ Pickup: ${d.pickupTime || ""}<br>
-            📍 ${d.location}<br>
-            👤 Donor: ${d.donorName}<br>
-            ${d.image ? `<img src="${d.image}" width="120">` : ""}
-            <button onclick="claimFood('${doc.id}')">Claim</button>
-            <br>${mapLink}
-          `;
-        }
+        li.innerHTML = `
+          <h4>${d.food}</h4>
+          <p>📍 ${d.location}</p>
+          <p>👤 Donor: ${d.donorName}</p>
+          ${d.image ? `<img src="${d.image}" width="120">` : ""}
+          ${d.claimed
+            ? `<strong>✔ Claimed by ${d.claimedBy}</strong>`
+            : `<button class="claim-btn" onclick="claimFood('${doc.id}')">Claim</button>`
+          }
+        `;
 
         foodList.appendChild(li);
       });
@@ -136,76 +113,70 @@ document.addEventListener("DOMContentLoaded", () => {
   // ================= CLAIM FOOD =================
   window.claimFood = (docId) => {
     const ngoName = document.getElementById("ngoName").value.trim();
-
     if (!ngoName) {
       alert("Please enter NGO Name first");
       return;
     }
 
-    const distance = (Math.random() * 8 + 1).toFixed(1);
-
     db.collection("foods").doc(docId).update({
       claimed: true,
       claimedBy: ngoName,
-      distance: distance
+      distance: (Math.random() * 8 + 1).toFixed(1)
     });
   };
 
-  //login system 
+  // ================= LOGIN =================
   window.loginUser = () => {
-  const email = document.getElementById("loginEmail").value.trim();
-  const password = document.getElementById("loginPassword").value.trim();
-  const role = document.querySelector('input[name="role"]:checked')?.value;
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+    const role = document.querySelector('input[name="role"]:checked')?.value;
 
-  if (!email || !password || !role) {
-    alert("Please fill all details");
-    return;
-  }
+    if (!email || !password || !role) {
+      alert("Please fill all details");
+      return;
+    }
 
-  auth.signInWithEmailAndPassword(email, password)
-    .then(() => {
-      localStorage.setItem("userRole", role);
-      applyRoleUI();
-    })
-    .catch(err => alert(err.message));
-};
-// role based ui control
+    auth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        localStorage.setItem("userRole", role);
+        applyRoleUI();
+      })
+      .catch(err => alert(err.message));
+  };
+
+  // ================= ROLE BASED UI =================
   function applyRoleUI() {
-  const role = localStorage.getItem("userRole");
+    const role = localStorage.getItem("userRole");
 
-  loginSection.style.display = "none";
-  roleSwitch.style.display = "none";
+    loginSection.style.display = "none";
+    roleSwitch.style.display = "none";
 
-  if (role === "donor") {
-    donorSection.style.display = "block";
-    ngoSection.style.display = "none";
+    if (role === "donor") {
+      donorSection.style.display = "block";
+      ngoSection.style.display = "none";
+    } else {
+      donorSection.style.display = "none";
+      ngoSection.style.display = "block";
+    }
   }
 
-  if (role === "ngo") {
-    donorSection.style.display = "none";
-    ngoSection.style.display = "block";
-  }
-}
-
-//auto login on refresh 
+  // ================= AUTO LOGIN =================
   auth.onAuthStateChanged(user => {
-  if (user && localStorage.getItem("userRole")) {
-    applyRoleUI();
-  } else {
-    loginSection.style.display = "block";
-    donorSection.style.display = "none";
-    ngoSection.style.display = "none";
-  }
-});
-//logout
-  window.logout = () => {
-  auth.signOut().then(() => {
-    localStorage.clear();
-    location.reload();
+    if (user && localStorage.getItem("userRole")) {
+      applyRoleUI();
+    } else {
+      loginSection.style.display = "block";
+      donorSection.style.display = "none";
+      ngoSection.style.display = "none";
+    }
   });
-};
 
-
+  // ================= LOGOUT =================
+  window.logout = () => {
+    auth.signOut().then(() => {
+      localStorage.clear();
+      location.reload();
+    });
+  };
 
 });
-
