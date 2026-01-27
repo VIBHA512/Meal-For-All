@@ -189,5 +189,29 @@ document.addEventListener("DOMContentLoaded", () => {
       location.reload();
     });
   };
+  window.initMap = () => {
+  const center = { lat: 28.6139, lng: 77.2090 }; // Delhi default
+
+  const map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 12,
+    center,
+  });
+
+  // LIVE markers from Firestore
+  db.collection("foods").onSnapshot(snapshot => {
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      if (!d.location) return;
+
+      new google.maps.Marker({
+        position: center, // (later can convert location → lat/lng)
+        map,
+        title: d.food
+      });
+    });
+  });
+};
+
 
 });
+
