@@ -197,22 +197,11 @@ li.innerHTML = `
   };
   
 
-  // LIVE markers from Firestore
-  db.collection("foods").onSnapshot(snapshot => {
-    snapshot.forEach(doc => {
-      const d = doc.data();
-      if (!d.location) return;
-
-      new google.maps.Marker({
-        position: center, // (later can convert location → lat/lng)
-        map,
-        title: d.food
-      });
-    });
-  });
+ 
 };
 
 
 });
+
 
 
