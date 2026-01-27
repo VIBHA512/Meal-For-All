@@ -173,7 +173,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function applyRoleUI() {
   const role = localStorage.getItem("userRole");
 
-  document.getElementById("loginSection").style.display = "none";
+  loginSection.style.display = "none";
+  roleSwitch.style.display = "none";
 
   if (role === "donor") {
     donorSection.style.display = "block";
@@ -185,6 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ngoSection.style.display = "block";
   }
 }
+
 //auto login on refresh 
   auth.onAuthStateChanged(user => {
   if (user && localStorage.getItem("userRole")) {
@@ -206,3 +208,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 });
+
