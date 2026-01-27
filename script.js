@@ -101,17 +101,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const li = document.createElement("li");
         li.className = "food-card";
+const mapURL =
+  "https://www.google.com/maps/search/?api=1&query=" +
+  encodeURIComponent(d.location);
 
-        li.innerHTML = `
-          <h4>${d.food}</h4>
-          <p>📍 ${d.location}</p>
-          <p>👤 Donor: ${d.donorName}</p>
-          ${d.image ? `<img src="${d.image}" width="120">` : ""}
-          ${d.claimed
-            ? `<strong>✔ Claimed by ${d.claimedBy}</strong>`
-            : `<button class="claim-btn" onclick="claimFood('${doc.id}')">Claim</button>`
-          }
-        `;
+li.innerHTML = `
+  <h4>${d.food}</h4>
+  <p>📍 ${d.location}</p>
+  <a href="${mapURL}" target="_blank" class="map-link">
+    🗺️ Open in Google Maps
+  </a>
+  <p>👤 Donor: ${d.donorName}</p>
+  ${d.image ? `<img src="${d.image}" width="120">` : ""}
+  ${d.claimed
+    ? `<strong>✔ Claimed by ${d.claimedBy}</strong>`
+    : `<button class="claim-btn" onclick="claimFood('${doc.id}')">Claim</button>`
+  }
+`;
 
         foodList.appendChild(li);
       });
@@ -189,13 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
       location.reload();
     });
   };
-  window.initMap = () => {
-  const center = { lat: 28.6139, lng: 77.2090 }; // Delhi default
-
-  const map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 12,
-    center,
-  });
+  
 
   // LIVE markers from Firestore
   db.collection("foods").onSnapshot(snapshot => {
@@ -214,4 +214,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 });
+
 
