@@ -216,42 +216,32 @@ footer {
   color: #6b7280; font-size: 0.9rem; font-weight: 500;
   animation: fadeIn 0.5s ease 0.3s both;
 }
-body {
-  font-family: Arial, sans-serif;
-  background: #f5f7fa;
-  padding: 20px;
+
+.login-card {
+  max-width: 420px;
+  margin: 80px auto;
+  text-align: center;
 }
 
-.card {
-  max-width: 350px;
-  margin: 60px auto;
-  padding: 25px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  text-align: center;
- 
+.login-card input {
+  padding-left: 16px;
 }
+
+.login-card button {
+  width: 100%;
+  margin-top: 12px;
+}
+
+
+
 .card {
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
 }
 
-input {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-}
 
-button {
-  padding: 10px 20px;
-  background: #4CAF50;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 6px;
-}
+
 
 .role {
   display: flex;
@@ -272,10 +262,16 @@ button {
     gap: 40px;
   }
 }
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1200px;
+  }
+}
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
 
 
