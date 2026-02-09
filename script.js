@@ -51,41 +51,36 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ================= POST FOOD =================
-  window.postFood = () => {
-    const donorName = document.getElementById("donorName").value.trim();
-    const foodDetails = document.getElementById("foodDetails").value.trim();
-    const location = document.getElementById("location").value.trim();
+window.postFood = () => {
+  const donorName = document.getElementById("donorName").value.trim();
+  const foodDetails = document.getElementById("foodDetails").value.trim();
+  const location = document.getElementById("location").value.trim();
+  const expiryTime = document.getElementById("expiryTime").value;
 
-    if (!donorName || !foodDetails || !location) {
-      alert("Please fill Donor Name, Food Details & Location");
-      return;
-    }
+  if (!donorName || !foodDetails || !location || !expiryTime) {
+    alert("Please fill all details including expiry time");
+    return;
+  }
 
-    db.collection("foods").add({
-      donorName,
-      donorType: document.getElementById("donorType").value,
-      donorPhone: document.getElementById("donorPhone").value,
-      donorEmail: document.getElementById("donorEmail").value,
-      food: foodDetails,
-      quantity: document.getElementById("foodQuantity").value,
-      foodType: document.getElementById("foodType").value,
-      pickupTime: document.getElementById("pickupTime").value,
-      location,
-      image: imageData || "",
-      claimed: false,
-      postedAt: Date.now()
-    });
+  db.collection("foods").add({
+    donorName,
+    donorType: document.getElementById("donorType").value,
+    donorPhone: document.getElementById("donorPhone").value,
+    donorEmail: document.getElementById("donorEmail").value,
+    food: foodDetails,
+    quantity: document.getElementById("foodQuantity").value,
+    foodType: document.getElementById("foodType").value,
+    pickupTime: document.getElementById("pickupTime").value,
+    expiryTime: new Date(expiryTime).getTime(), // ⭐ ADD THIS
+    location,
+    image: imageData || "",
+    claimed: false,
+    postedAt: Date.now()
+  });
 
-    alert("Food posted successfully 🎉");
+  alert("Food posted successfully 🎉");
+};
 
-    document.querySelectorAll("#donorSection input").forEach(i => {
-      if (i.type !== "file") i.value = "";
-    });
-
-    if (preview) preview.style.display = "none";
-    if (foodImage) foodImage.value = "";
-    imageData = "";
-  };
 
   // ================= NGO LIVE VIEW =================
   db.collection("foods").orderBy("postedAt", "desc")
@@ -94,9 +89,15 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!foodList) return;
 
       foodList.innerHTML = "";
+      
+snapshot.forEach(doc => {
+  const d = doc.data();
+  const now = Date.now();
 
-      snapshot.forEach(doc => {
-        const d = doc.data();
+  // ❌ Skip expired food
+ if (d.expiryTime && Number(d.expiryTime) < now) return;
+
+
         if (!d.food || !d.location) return;
 
         const li = document.createElement("li");
@@ -111,6 +112,9 @@ li.innerHTML = `
   <a href="${mapURL}" target="_blank" class="map-link">
     🗺️ Open in Google Maps
   </a>
+ <p>⏰ Expires at: ${new Date(d.expiryTime).toLocaleString()}</p>
+
+
   <p>👤 Donor: ${d.donorName}</p>
   ${d.image ? `<img src="${d.image}" width="120">` : ""}
   ${d.claimed
@@ -199,6 +203,7 @@ li.innerHTML = `
 
 
 });
+
 
 
 
