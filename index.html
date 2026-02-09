@@ -97,6 +97,9 @@
         <div class="input-wrapper"><span class="input-icon">👥</span><input id="foodQuantity" placeholder="Quantity (e.g. serves 100 people)" /></div>
         <div class="input-wrapper"><span class="input-icon">🍽️</span><input id="foodType" placeholder="Veg / Non-Veg" /></div>
         <div class="input-wrapper"><span class="input-icon">🕐</span><input id="pickupTime" placeholder="Pickup Time (next 4–5 hours preferred)" /></div>
+        <label>Expiry Time:</label>
+<input type="datetime-local" id="expiryTime" required>
+
       </div>
 
       <div class="input-wrapper full-width">
@@ -139,6 +142,11 @@
 >
   🗺️ Open location in Google Maps
 </a>
+      <p>⏳ Expires at: <span id="expiryDisplay"></span></p>
+<p id="status"></p>
+      <p><i>*Food is prioritized based on expiry time*</i></p>
+
+
 
 
       <h3><span class="icon-box-sm">🍽️</span> Available Food</h3>
@@ -159,6 +167,7 @@
 
 </body>
 </html>
+
 
 
 
