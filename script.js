@@ -95,7 +95,8 @@ snapshot.forEach(doc => {
   const now = Date.now();
 
   // ❌ Skip expired food
- if (d.expiryTime && Number(d.expiryTime) < now) return;
+ if (d.expiryTime && d.expiryTime < now) return;
+
 
 
         if (!d.food || !d.location) return;
@@ -220,6 +221,7 @@ li.innerHTML = `
 
 
 });
+
 
 
 
