@@ -94,55 +94,52 @@ snapshot.forEach(doc => {
   const d = doc.data();
   const now = Date.now();
 
-  // ❌ Skip expired food
- if (d.expiryTime && d.expiryTime < now) return;
+  // skip expired (with buffer)
+  if (d.expiryTime && d.expiryTime < now - 5 * 60 * 1000) return;
+  if (!d.food || !d.location) return;
 
-
-
-        if (!d.food || !d.location) return;
-
-        const li = document.createElement("li");
-        li.className = "food-card";
-const mapURL =
-  "https://www.google.com/maps/search/?api=1&query=" +
-  encodeURIComponent(d.location);
-
-li.innerHTML = `
-  <h4>${d.food}</h4>
-  <p>📍 ${d.location}</p>
-
-  <a href="${mapURL}" target="_blank" class="map-link">
-    🗺️ Open in Google Maps
-  </a>
-
-  <p>⏰ Expires at: ${
-    d.expiryTime
-      ? new Date(Number(d.expiryTime)).toLocaleString()
-      : "Not provided"
-  }</p>
-
-  ${
-    minsLeft !== null
-      ? `<p style="color:${minsLeft < 60 ? 'red' : 'green'}">
-           ⏳ ${minsLeft} minutes left
-         </p>`
-      : ""
+  let minsLeft = null;
+  if (d.expiryTime) {
+    minsLeft = Math.ceil((d.expiryTime - now) / (1000 * 60));
   }
 
-  <p>👤 Donor: ${d.donorName}</p>
+  const li = document.createElement("li");
+  li.className = "food-card";
 
-  ${d.image ? `<img src="${d.image}" width="120">` : ""}
+  const mapURL =
+    "https://www.google.com/maps/search/?api=1&query=" +
+    encodeURIComponent(d.location);
 
-  ${
-    d.claimed
-      ? `<strong>✔ Claimed by ${d.claimedBy}</strong>`
-      : `<button class="claim-btn" onclick="claimFood('${doc.id}')">Claim</button>`
-  }
-`;
+  li.innerHTML = `
+    <h4>${d.food}</h4>
+    <p>📍 ${d.location}</p>
 
+    <a href="${mapURL}" target="_blank">🗺️ Open in Google Maps</a>
 
-        foodList.appendChild(li);
-      });
+    <p>⏰ Expires at: ${new Date(d.expiryTime).toLocaleString()}</p>
+
+    ${
+      minsLeft !== null
+        ? `<p style="color:${minsLeft < 60 ? 'red' : 'green'}">
+             ⏳ ${minsLeft} minutes left
+           </p>`
+        : ""
+    }
+
+    <p>👤 Donor: ${d.donorName}</p>
+
+    ${d.image ? `<img src="${d.image}" width="120">` : ""}
+
+    ${
+      d.claimed
+        ? `<strong>✔ Claimed by ${d.claimedBy}</strong>`
+        : `<button onclick="claimFood('${doc.id}')">Claim</button>`
+    }
+  `;
+
+  foodList.appendChild(li);
+});
+
     });
 
   // ================= CLAIM FOOD =================
@@ -221,6 +218,7 @@ li.innerHTML = `
 
 
 });
+
 
 
 
