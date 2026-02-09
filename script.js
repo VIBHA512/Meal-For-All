@@ -112,7 +112,17 @@ li.innerHTML = `
   <a href="${mapURL}" target="_blank" class="map-link">
     🗺️ Open in Google Maps
   </a>
- <p>⏰ Expires at: ${new Date(d.expiryTime).toLocaleString()}</p>
+<p>⏰ Expires at: ${
+  d.expiryTime
+    ? new Date(Number(d.expiryTime)).toLocaleString()
+    : "Not provided"
+}</p>
+const minsLeft = Math.floor((d.expiryTime - Date.now()) / 60000);
+
+<p style="color:${minsLeft < 60 ? 'red' : 'green'}">
+  ⏳ ${minsLeft} minutes left
+</p>
+
 
 
   <p>👤 Donor: ${d.donorName}</p>
@@ -203,6 +213,7 @@ li.innerHTML = `
 
 
 });
+
 
 
 
