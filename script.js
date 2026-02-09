@@ -109,29 +109,36 @@ const mapURL =
 li.innerHTML = `
   <h4>${d.food}</h4>
   <p>📍 ${d.location}</p>
+
   <a href="${mapURL}" target="_blank" class="map-link">
     🗺️ Open in Google Maps
   </a>
-<p>⏰ Expires at: ${
-  d.expiryTime
-    ? new Date(Number(d.expiryTime)).toLocaleString()
-    : "Not provided"
-}</p>
-const minsLeft = Math.floor((d.expiryTime - Date.now()) / 60000);
 
-<p style="color:${minsLeft < 60 ? 'red' : 'green'}">
-  ⏳ ${minsLeft} minutes left
-</p>
+  <p>⏰ Expires at: ${
+    d.expiryTime
+      ? new Date(Number(d.expiryTime)).toLocaleString()
+      : "Not provided"
+  }</p>
 
-
+  ${
+    minsLeft !== null
+      ? `<p style="color:${minsLeft < 60 ? 'red' : 'green'}">
+           ⏳ ${minsLeft} minutes left
+         </p>`
+      : ""
+  }
 
   <p>👤 Donor: ${d.donorName}</p>
+
   ${d.image ? `<img src="${d.image}" width="120">` : ""}
-  ${d.claimed
-    ? `<strong>✔ Claimed by ${d.claimedBy}</strong>`
-    : `<button class="claim-btn" onclick="claimFood('${doc.id}')">Claim</button>`
+
+  ${
+    d.claimed
+      ? `<strong>✔ Claimed by ${d.claimedBy}</strong>`
+      : `<button class="claim-btn" onclick="claimFood('${doc.id}')">Claim</button>`
   }
 `;
+
 
         foodList.appendChild(li);
       });
@@ -213,6 +220,7 @@ const minsLeft = Math.floor((d.expiryTime - Date.now()) / 60000);
 
 
 });
+
 
 
 
